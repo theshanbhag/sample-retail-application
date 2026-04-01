@@ -1,8 +1,10 @@
 import os
 import flask
+import json
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from bson.objectid import ObjectId
+from bson import json_util
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -27,6 +29,32 @@ inventory_collection = get_db_collection()
 @app.route('/')
 def health_check():
     return jsonify({"status": "healthy", "message": "Catalog API is running"})
+
+@app.route('/load-data')
+def load_data():
+    if inventory_collection is None:
+        return jsonify({"error": "Database connection failed"}), 500
+    
+    file_path = "data/search_catalog_myn.json"
+    try:
+        if not os.path.exists(file_path):
+            return jsonify({"error": f"File not found: {file_path}"}), 404
+            
+        with open(file_path, 'r') as f:
+            data = json_util.loads(f.read())
+            
+        if not isinstance(data, list):
+            # If it's a single object, wrap it in a list
+            data = [data]
+            
+        result = inventory_collection.insert_many(data)
+        return jsonify({
+            "status": "success", 
+            "message": f"Successfully loaded {len(result.inserted_ids)} records",
+            "count": len(result.inserted_ids)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/categories')
 def get_categories():

@@ -11,7 +11,7 @@ use gcloud to setup the google project to deploy the cloud run function on.
 gcloud init
 ```
 
-### Create the backend the application on cloud run
+### 1. Create the backend the application on cloud run
 
 ```
 
@@ -20,8 +20,17 @@ gcloud run deploy grocery-api --source .  --command="gunicorn,--bind,0.0.0.0:808
 
 ```
 
-### Create the frontend for the application on cloud run
+### 2. Create the frontend for the application on cloud run
 
 ```
 cloud run deploy grocery-frontend  --source .  --command="streamlit,run,streamlit_app.py,--server.port,8080,--server.address,0.0.0.0"  --set-env-vars="API_URL=<app url from backend command output>"  --region us-central1   --allow-unauthenticated
+```
+
+### Load data
+
+open the backend endpoint(created on step 1) using your browser with route to /load-data to load the sample data
+
+e.g.
+```
+https://grocery-app-url.run.app/load-data
 ```
