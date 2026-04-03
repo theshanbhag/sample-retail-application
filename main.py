@@ -19,7 +19,7 @@ def get_db_collection():
         return None
     try:
         client = MongoClient(connection_string)
-        return client.search.catalog_myn
+        return client.search.catalog_products
     except Exception as e:
         print(f"Error connecting to MongoDB: {e}")
         return None
