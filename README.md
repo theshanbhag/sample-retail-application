@@ -1,7 +1,9 @@
 
 
 ## Prerequsites
-
+```
+export MDB_MCP_CONNECTION_STRING="mongodb connection sting"
+```
 ## Deploy from local
 
 ### setup env variables
