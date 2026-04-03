@@ -11,26 +11,17 @@ use gcloud to setup the google project to deploy the cloud run function on.
 gcloud init
 ```
 
-### 1. Create the backend the application on cloud run
+### 1. set up virtualenv
 
 ```
-
-# deploy the docker image on cloud run
-gcloud run deploy grocery-api --source .  --command="gunicorn,--bind,0.0.0.0:8080,--workers,1,--threads,8,--timeout,0,main:app"  --set-env-vars="MDB_MCP_CONNECTION_STRING=<<connection string>>" --region us-central1  --allow-unauthenticated
-
+virtualenv venv
+source venv/bin/activate
 ```
 
-### 2. Create the frontend for the application on cloud run
+
+### 2. Deploy both frontend and backend
 
 ```
-cloud run deploy grocery-frontend  --source .  --command="streamlit,run,streamlit_app.py,--server.port,8080,--server.address,0.0.0.0"  --set-env-vars="API_URL=<app url from backend command output>"  --region us-central1   --allow-unauthenticated
-```
-
-### Load data
-
-open the backend endpoint(created on step 1) using your browser with route to /load-data to load the sample data
-
-e.g.
-```
-https://grocery-app-url.run.app/load-data
+# the script will load the data to MongoDB
+./deploy.sh
 ```
